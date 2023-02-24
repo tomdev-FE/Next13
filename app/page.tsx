@@ -20,8 +20,8 @@ const defaultValues: LoginRequest = {
   password: "",
 };
 const schema = yup.object({
-  username: yup.string().required("Required field"),
-  password: yup.string().required("Required field"),
+  username: yup.string().required("Please enter username"),
+  password: yup.string().required("Please enter password"),
 });
 
 export default function HomePage() {
@@ -51,23 +51,23 @@ export default function HomePage() {
       router.push("/dashboard");
     }
   }, [stateContext.state.authUser.authStatus]);
-
   //  API Login Mutation
-  const { mutate: loginUser, isLoading } = useMutation(
-    (userData: LoginRequest) => loginFn(userData),
-    {
-      onSuccess: (data: LoginResponse) => {
-        stateContext.dispatch({
-          type: "SET_USER",
-          payload: { authStatus: data.auth },
-        });
-        router.push("/dashboard");
-      },
-      onError: (error: Error) => {
-        console.log(error);
-      },
-    }
-  );
+  const {
+    mutate: loginUser,
+    isLoading,
+    isError,
+  } = useMutation((userData: LoginRequest) => loginFn(userData), {
+    onSuccess: (data: LoginResponse) => {
+      stateContext.dispatch({
+        type: "SET_USER",
+        payload: { authStatus: data.auth },
+      });
+      router.push("/dashboard");
+    },
+    onError: (error: Error) => {
+      console.log(error);
+    },
+  });
 
   const onSubmit: SubmitHandler<LoginRequest> = (data) => {
     loginUser(data);
@@ -78,13 +78,14 @@ export default function HomePage() {
     <div className="flex items-center min-h-screen p-6 bg-gray-900">
       <div className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-gray-800 rounded-lg shadow-xl">
         <div className="flex flex-col overflow-y-auto md:flex-row">
-          <div className="relative h-32 md:h-auto md:w-1/2">
+          <div className="relative md:h-auto md:w-1/2">
             <Image
               aria-hidden="true"
               className="object-cover w-full h-full"
               src="/assets/img/login-office-dark.jpg"
               alt="Office"
-              fill
+              height="577"
+              width="448"
             />
           </div>
           <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
@@ -104,7 +105,7 @@ export default function HomePage() {
                   {errors.username ? (
                     <ErrorMessage message={errors.username?.message} />
                   ) : (
-                    <div className="h-9">
+                    <div className="h-4">
                       <span></span>
                     </div>
                   )}
@@ -121,11 +122,18 @@ export default function HomePage() {
                   {errors.password ? (
                     <ErrorMessage message={errors.password?.message} />
                   ) : (
-                    <div className="h-9">
+                    <div className="h-4">
                       <span></span>
                     </div>
                   )}
                 </Label>
+                {isError ? (
+                  <ErrorMessage message="You have entered the wrong account information. Please try again" />
+                ) : (
+                  <div className="h-4">
+                    <span></span>
+                  </div>
+                )}
                 <Button isLoading={isLoading} title="Log in"></Button>
               </form>
               <hr className="my-8" />
