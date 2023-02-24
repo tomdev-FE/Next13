@@ -1,15 +1,17 @@
-export default function SkeletonTable() {
-  const numberOfRows = 6;
-  const Row = () => (
-    <div className="m-b-1">
-      <div className="bg-gray-300 rounded h-12 relative overflow-hidden"></div>
-    </div>
-  );
-  const renderedRows = [...Array(numberOfRows)].map((e, i) => (
-    <div key={e}>
-      <Row />
-    </div>
-  ));
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-  return <> {renderedRows}</>;
+const indexSkeleton = [1, 2, 3, 4];
+
+export default function SkeletonTable() {
+  return (
+    <>
+      {" "}
+      {indexSkeleton.map((el) => (
+        <div key={el}>
+          <Skeleton height={"5rem"} />
+        </div>
+      ))}
+    </>
+  );
 }

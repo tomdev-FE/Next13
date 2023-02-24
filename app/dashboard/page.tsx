@@ -79,7 +79,7 @@ export default function Dashboard() {
       {
         header: "Name",
         accessorKey: "name",
-        width: 50,
+        maxSize:120,
         cell: (info) => info.getValue(),
       },
       {
@@ -150,13 +150,16 @@ export default function Dashboard() {
                 </tr>
               ))}
             </TableHeader>
-            <TableBody className=" bg-gray-800 divide-y divide-gray-700  text-gray-400 ">
+            <TableBody>
               {table.getRowModel().rows.map((row) => {
                 return (
-                  <TableRow key={row.id}>
+                  <TableRow
+                    key={row.id}
+                    className=" bg-gray-800 divide-gray-700 border-gray-800	text-gray-400 "
+                  >
                     {row.getVisibleCells().map((cell) => {
                       return (
-                        <TableCell key={cell.id}>
+                        <TableCell key={cell.id} className="px-6 py-5 text-left">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
@@ -170,7 +173,7 @@ export default function Dashboard() {
             </TableBody>
           </Table>
 
-          <TableFooter className="border-t border-gray-700 flex justify-end items-center bg-gray-800">
+          <TableFooter className="border-t border-gray-800 flex justify-end items-center bg-gray-800">
             <Pagination
               totalResults={data?.total || 0}
               resultsPerPage={table.getState().pagination.pageSize}
