@@ -91,7 +91,7 @@ export default function HomePage() {
           <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
             <div className="w-full">
               <h1 className="mb-4 text-xl font-semibold text-gray-200">
-                Login
+                Logins
               </h1>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Label>
