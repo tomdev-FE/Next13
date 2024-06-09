@@ -8,31 +8,21 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3.5.3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.9.1
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v2.2.0
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+      - name: Log into registry
+        uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Docker Hub Description
-        uses: peter-evans/dockerhub-description@v3
+          registry: ${{ secrets.AZURE_URL }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: Build & Push
+        uses: docker/build-push-action@v2
         with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ secrets.DOCKER_USER }}/demo
-          readme-filepath: ./README.md
-
-      - name: Build and push
-        uses: docker/build-push-action@v4.1.1
-        with:
-          context: .
-          file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USER }}/demo:latest
-          platforms: linux/amd64,linux/arm64/v8
+          build-args: |
+            version=${{ steps.tag.outputs.tag }}
+          tags: ${{ secrets.AZURE_URL }}/${{ 'testing' }}:${{ steps.tag.outputs.tag }}
