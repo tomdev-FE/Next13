@@ -1,25 +1,35 @@
-name: Build and Publish Docker image
+name: Build and Deploy to ACR
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
+
+env:
+  IMAGE_NAME: soundstalk
+  REGISTRY_NAME: soundstalk.azurecr.io
+  REGISTRY_USERNAME: ${{ secrets.ACR_USERNAME }}
+  REGISTRY_PASSWORD: ${{ secrets.ACR_PASSWORD }}
 
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
-      - name: Log into registry
-        uses: docker/login-action@v1
+
+      - name: Login to ACR
+        uses: azure/docker-login@v1
         with:
-          registry: ${{ secrets.AZURE_URL }}
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          login-server: ${{ env.REGISTRY_NAME }}
+          username: ${{ env.REGISTRY_USERNAME }}
+          password: ${{ env.REGISTRY_PASSWORD }}
+
+      - name: Build Docker image
+        run: docker build -t ${{ env.IMAGE_NAME }} .
+
+      - name: Tag Docker image
+        run: docker tag ${{ env.IMAGE_NAME }} ${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Push Docker image to ACR
+        run: docker push ${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
