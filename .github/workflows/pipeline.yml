@@ -29,5 +29,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            tuanln.dev@gmail.com/{docker_repository}:${{ github.sha }}
-            tuanln.dev@gmail.com/{docker_repository}:latest
+            tuanln.dev@gmail.com/demo:${{ github.sha }}
+            tuanln.dev@gmail.com/demo:latest
