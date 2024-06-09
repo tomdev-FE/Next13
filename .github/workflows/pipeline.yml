@@ -10,19 +10,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Get tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
       - name: Log into registry
         uses: docker/login-action@v1
         with:
           registry: ${{ secrets.AZURE_URL }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-      - name: Build & Push
-        uses: docker/build-push-action@v2
+      - name: Build and push
+        uses: docker/build-push-action@v5
         with:
-          push: true
-          build-args: |
-            version=${{ steps.tag.outputs.tag }}
-          tags: ${{ secrets.AZURE_URL }}/${{ 'testing' }}:${{ steps.tag.outputs.tag }}
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
