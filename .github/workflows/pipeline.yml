@@ -17,15 +17,15 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v2.2.0
         with:
-          username: tuanlndev
-          password: dckr_pat_TmQKPTLopmhiXCKZYUkhl96UQ5s
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v3
         with:
-          username: tuanlndev
-          password: dckr_pat_TmQKPTLopmhiXCKZYUkhl96UQ5s
-          repository: tuanlndev/demo
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ secrets.DOCKER_USER }}/demo
           readme-filepath: ./README.md
 
       - name: Build and push
@@ -34,5 +34,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: tuanlndev/my-nextjs-docker:latest
+          tags: ${{ secrets.DOCKER_USER }}/demo:latest
           platforms: linux/amd64,linux/arm64/v8
