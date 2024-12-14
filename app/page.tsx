@@ -77,6 +77,11 @@ export default function HomePage() {
   return (
     <div className="flex items-center min-h-screen p-6 bg-gray-900">
       <div className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-gray-800 rounded-lg shadow-xl">
+          <iframe
+          title={"PDF-Viewer"}
+          src={`https://view.officeapps.live.com/op/embed.aspx?src=https://drka2ad4qb2jh.cloudfront.net/sample3+(1).docx`}
+          style={{ height: "100vh", width: "90vw" }}
+        ></iframe>
         <div className="flex flex-col overflow-y-auto md:flex-row">
           <div className="relative md:h-auto md:w-1/2">
             <Image
